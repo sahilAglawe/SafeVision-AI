@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SafeVisionAI Guardian UI</title>
+    <meta name="description" content="SafeVisionAI Guardian UI - Real-time Women Safety Surveillance" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <div class="navbar-logo">SV</div>
+        <div>
+          <span class="navbar-title">SafeVisionAI</span>
+          <span class="navbar-subtitle">Women Safety Surveillance</span>
+        </div>
+      </div>
+      <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation menu">
+        <i class="fa fa-bars"></i>
+      </button>
+      <ul class="navbar-links">
+        <li><button class="nav-btn active" data-section="dashboard">Dashboard</button></li>
+        <li><button class="nav-btn" data-section="live">Live Detection</button></li>
+        <li><button class="nav-btn" data-section="history">Alert History</button></li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+      <!-- Dashboard Section -->
+      <section id="dashboard" class="main-section">
+        <div class="welcome-card">
+          <div>
+            <h1>Welcome back, Admin</h1>
+            <p id="dashboard-date"></p>
+          </div>
+          <div class="current-time">
+            <span id="dashboard-time"></span>
+            <span class="current-time-label">Current Time</span>
+          </div>
+        </div>
+        <div id="threat-alert" class="threat-alert" style="display:none;">
+          <strong>Active Threat Detected!</strong>
+          <span>Suspicious activity detected in Camera Zone 1. Immediate attention required.</span>
+        </div>
+        <div class="stats-cards">
+          <div class="stat-card">
+            <div class="stat-title">Total Alerts</div>
+            <div class="stat-value red" id="total-alerts">0</div>
+            <div class="stat-desc" id="alerts-desc">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Last Detection</div>
+            <div class="stat-value orange" id="last-detection">No detections</div>
+            <div class="stat-desc" id="detection-desc">System ready</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">System Uptime</div>
+            <div class="stat-value green" id="uptime">00:00:00</div>
+            <div class="stat-desc">Running smoothly</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Active Cameras</div>
+            <div class="stat-value blue" id="active-cameras">0/1</div>
+            <div class="stat-desc" id="camera-status">Checking...</div>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="dashboard-card">
+            <div class="dashboard-card-title">Live Camera Feed <span class="badge live">LIVE</span></div>
+            <div class="dashboard-card-desc">Main entrance monitoring</div>
+            <div class="live-feed">
+              <div class="rec-badge">REC</div>
+              <img id="dashboard-video-feed" src="{{ url_for('video_feed') }}" alt="Live camera feed" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+              <div class="live-feed-footer">
+                <span>Camera 1 - Main Entrance</span>
+                <span id="live-feed-time"></span>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-card">
+            <div class="dashboard-card-title">Recent Threat Alerts</div>
+            <div class="dashboard-card-desc">Last 24 hours activity</div>
+            <div class="recent-alerts" id="recent-alerts">
+              <!-- Alerts will be rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Detection Section -->
+      <section id="live" class="main-section" style="display:none;">
+        <div class="section-header">
+          <h1>Live Detection Feed</h1>
+          <span class="badge green" id="ai-detection-badge">AI Detection: ACTIVE</span>
+        </div>
+        <div id="danger-banner" class="danger-banner" style="display:none;">
+          <strong>⚠️ DANGER DETECTED!</strong>
+          <span>Suspicious activity identified in the surveillance area. Alert authorities immediately.</span>
+          <button id="acknowledge-btn">Acknowledge</button>
+        </div>
+        <div class="live-video-card">
+          <div class="live-video-header">
+            <span>Primary Surveillance Feed</span>
+            <span class="badge live">LIVE</span>
+            <span class="badge outline" id="live-detection-time"></span>
+          </div>
+          <div class="live-video-feed" id="live-video-feed">
+            <div class="rec-badge">● REC</div>
+            <img id="live-video-stream" src="{{ url_for('video_feed') }}" alt="Live video stream" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;">
+            <div class="live-feed-footer">
+              <span>Camera 1 - Main Entrance</span>
+              <span class="sub">Resolution: 1080p | FPS: 30</span>
+              <span id="live-detection-time-footer"></span>
+            </div>
+          </div>
+          <div class="video-controls">
+            <button id="record-btn" class="btn destructive">Stop Recording</button>
+            <button id="detection-btn" class="btn">Pause Detection</button>
+            <button id="mute-btn" class="btn">Mute</button>
+            <button id="snapshot-btn" class="btn">Take Snapshot</button>
+            <button id="test-camera-btn" class="btn">Test Camera</button>
+            <button id="test-email-btn" class="btn">Test Email</button>
+            <button id="trigger-alert-btn" class="btn destructive">Trigger Alert</button>
+            <span class="status">Status: <span id="record-status">Recording</span></span>
+          </div>
+        </div>
+        <div class="detection-stats">
+          <div class="stat-card">
+            <div class="stat-title">Detection Accuracy</div>
+            <div class="stat-value green" id="detection-accuracy">94.7%</div>
+            <div class="stat-desc">Current session average</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Objects Detected</div>
+            <div class="stat-value blue" id="objects-detected">0</div>
+            <div class="stat-desc">In the last 24 hours</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Threat Level</div>
+            <div class="stat-value green" id="threat-level">LOW</div>
+            <div class="stat-desc">Current threat assessment</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alert History Section -->
+      <section id="history" class="main-section" style="display:none;">
+        <div class="section-header">
+          <h1>Alert History</h1>
+          <p>Review and manage security alerts and detections</p>
+          <button id="clear-alerts-btn" class="btn destructive" style="margin-top: 10px;">Clear All Alerts</button>
+        </div>
+        <div class="alert-history-filters">
+          <input type="text" id="search-alerts" placeholder="Search alerts..." />
+          <select id="severity-filter">
+            <option value="all">All Severities</option>
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+          </select>
+        </div>
+        <div class="alert-history-list" id="alert-history-list">
+          <!-- Alerts will be rendered here by JS -->
+        </div>
+      </section>
+    </main>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Navigation logic
+  const navBtns = document.querySelectorAll('.nav-btn');
+  const sections = document.querySelectorAll('.main-section');
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      sections.forEach(sec => sec.style.display = 'none');
+      document.getElementById(btn.dataset.section).style.display = '';
+    });
+  });
+
+  // Dashboard time and uptime
+  function pad(n) { return n.toString().padStart(2, '0'); }
+  let uptime = 0;
+  let activeThreats = 0;
+  
+  function updateDashboardTime() {
+    const now = new Date();
+    document.getElementById('dashboard-date').textContent = 'SafeVisionAI Dashboard - ' + now.toLocaleDateString();
+    document.getElementById('dashboard-time').textContent = now.toLocaleTimeString();
+    document.getElementById('live-feed-time').textContent = now.toLocaleTimeString();
+    document.getElementById('uptime').textContent = `${pad(Math.floor(uptime/3600))}:${pad(Math.floor((uptime%3600)/60))}:${pad(uptime%60)}`;
+    uptime++;
+    
+    // Show/hide threat alert based on real threat level
+    const threatLevel = document.getElementById('threat-level').textContent;
+    activeThreats = threatLevel === 'HIGH' ? 1 : 0;
+    document.getElementById('threat-alert').style.display = activeThreats > 0 ? '' : 'none';
+  }
+  setInterval(updateDashboardTime, 1000);
+  updateDashboardTime();
+
+  // API functions
+  async function fetchStats() {
+    try {
+      const response = await fetch('/api/stats');
+      const stats = await response.json();
+      
+      document.getElementById('total-alerts').textContent = stats.total_alerts;
+      document.getElementById('last-detection').textContent = stats.last_detection;
+      document.getElementById('active-cameras').textContent = `${stats.active_cameras}/1`;
+      document.getElementById('threat-level').textContent = stats.threat_level;
+      document.getElementById('detection-accuracy').textContent = `${stats.detection_accuracy}%`;
+      document.getElementById('objects-detected').textContent = stats.total_alerts;
+      
+      // Update threat level color
+      const threatLevelEl = document.getElementById('threat-level');
+      threatLevelEl.className = 'stat-value ' + (stats.threat_level === 'HIGH' ? 'red' : stats.threat_level === 'MEDIUM' ? 'orange' : 'green');
+      
+      // Update descriptions
+      document.getElementById('alerts-desc').textContent = stats.total_alerts > 0 ? `+${stats.threat_detections} high priority` : 'No alerts yet';
+      document.getElementById('detection-desc').textContent = stats.last_detection !== 'No detections yet' ? 'Recent activity detected' : 'System ready';
+      document.getElementById('camera-status').textContent = stats.active_cameras > 0 ? 'All systems operational' : 'Camera offline';
+      
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  }
+
+  async function fetchAlerts() {
+    try {
+      const response = await fetch('/api/alerts');
+      const alerts = await response.json();
+      
+      // Update recent alerts in dashboard
+      const recentAlertsContainer = document.getElementById('recent-alerts');
+      recentAlertsContainer.innerHTML = '';
+      
+      alerts.slice(0, 3).forEach(alert => {
+        const div = document.createElement('div');
+        div.className = `alert ${alert.severity.toLowerCase()}`;
+        div.innerHTML = `
+          <div class="alert-icon"></div>
+          <div>
+            <div class="alert-title">${alert.detectedClass}</div>
+            <div class="alert-desc">${alert.description}</div>
+            <div class="alert-meta">${alert.timestamp} • ${alert.zone}</div>
+          </div>
+        `;
+        recentAlertsContainer.appendChild(div);
+      });
+      
+      // Update alert history table
+      renderAlertHistory(alerts);
+      
+    } catch (error) {
+      console.error('Error fetching alerts:', error);
+    }
+  }
+
+  function renderAlertHistory(alerts) {
+    const list = document.getElementById('alert-history-list');
+    const search = document.getElementById('search-alerts').value.toLowerCase();
+    const severity = document.getElementById('severity-filter').value;
+    
+    list.innerHTML = '';
+    
+    if (alerts.length === 0) {
+      list.innerHTML = '<p style="text-align: center; color: #64748b; padding: 2rem;">No alerts found</p>';
+      return;
+    }
+    
+    // Table header
+    const table = document.createElement('table');
+    table.className = 'alert-table';
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>Alert ID</th>
+          <th>Timestamp</th>
+          <th>Detection Type</th>
+          <th>Severity</th>
+          <th>Zone</th>
+          <th>Description</th>
+          <th>Confidence</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `;
+    
+    const tbody = table.querySelector('tbody');
+    alerts.filter(alert => {
+      const matchesSearch = alert.detectedClass.toLowerCase().includes(search) || 
+                           alert.description.toLowerCase().includes(search) || 
+                           alert.id.toLowerCase().includes(search);
+      const matchesSeverity = severity === 'all' || alert.severity === severity;
+      return matchesSearch && matchesSeverity;
+    }).forEach(alert => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${alert.id}</td>
+        <td>${alert.timestamp}</td>
+        <td>${alert.detectedClass}</td>
+        <td><span class="alert-severity ${alert.severity.toLowerCase()}">${alert.severity}</span></td>
+        <td>${alert.zone}</td>
+        <td>${alert.description}</td>
+        <td>${alert.confidence}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    
+    list.appendChild(table);
+  }
+
+  // Live Detection controls
+  let isRecording = true;
+  let detectionActive = true;
+  let isMuted = false;
+  
+  const recordBtn = document.getElementById('record-btn');
+  const detectionBtn = document.getElementById('detection-btn');
+  const muteBtn = document.getElementById('mute-btn');
+  const snapshotBtn = document.getElementById('snapshot-btn');
+  const testCameraBtn = document.getElementById('test-camera-btn');
+  const testEmailBtn = document.getElementById('test-email-btn');
+  const triggerAlertBtn = document.getElementById('trigger-alert-btn');
+  const recordStatus = document.getElementById('record-status');
+  const aiDetectionBadge = document.getElementById('ai-detection-badge');
+  const aiDetectionStatus = document.getElementById('ai-detection-status');
+  const detectionBox = document.getElementById('detection-box');
+  const threatLevel = document.getElementById('threat-level');
+
+  recordBtn.addEventListener('click', () => {
+    isRecording = !isRecording;
+    recordBtn.textContent = isRecording ? 'Stop Recording' : 'Start Recording';
+    recordBtn.classList.toggle('destructive', isRecording);
+    recordStatus.textContent = isRecording ? 'Recording' : 'Stopped';
+  });
+  detectionBtn.addEventListener('click', () => {
+    detectionActive = !detectionActive;
+    detectionBtn.textContent = detectionActive ? 'Pause Detection' : 'Resume Detection';
+    aiDetectionBadge.textContent = `AI Detection: ${detectionActive ? 'ACTIVE' : 'INACTIVE'}`;
+    aiDetectionBadge.className = detectionActive ? 'badge green' : 'badge outline';
+    aiDetectionStatus.textContent = `AI Detection: ${detectionActive ? 'Monitoring' : 'Paused'}`;
+  });
+  muteBtn.addEventListener('click', () => {
+    isMuted = !isMuted;
+    muteBtn.textContent = isMuted ? 'Unmute' : 'Mute';
+  });
+
+  snapshotBtn.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/snapshot');
+      const data = await response.json();
+      
+      if (data.success) {
+        alert(`Snapshot saved: ${data.filename}`);
+      } else {
+        alert('Failed to take snapshot');
+      }
+    } catch (error) {
+      console.error('Error taking snapshot:', error);
+      alert('Error taking snapshot');
+    }
+  });
+
+  testCameraBtn.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/test_camera');
+      const data = await response.json();
+      
+      if (data.success) {
+        alert(`Camera test successful! Frame shape: ${data.frame_shape}`);
+      } else {
+        alert(`Camera test failed: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error testing camera:', error);
+      alert('Error testing camera');
+    }
+  });
+
+  testEmailBtn.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/test_email');
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('Email test successful!');
+      } else {
+        alert(`Email test failed: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error testing email:', error);
+      alert('Error testing email');
+    }
+  });
+
+  triggerAlertBtn.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/trigger_alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'Manual Test Alert',
+          severity: 'High'
+        })
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        alert('Alert triggered successfully! Check your email.');
+      } else {
+        alert(`Failed to trigger alert: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error triggering alert:', error);
+      alert('Error triggering alert');
+    }
+  });
+
+  // Clear alerts button
+  document.getElementById('clear-alerts-btn').addEventListener('click', async () => {
+    if (confirm('Are you sure you want to clear all alerts? This action cannot be undone.')) {
+      try {
+        const response = await fetch('/api/clear_alerts', { method: 'POST' });
+        const data = await response.json();
+        
+        if (data.success) {
+          alert('All alerts cleared successfully');
+          fetchAlerts();
+          fetchStats();
+        }
+      } catch (error) {
+        console.error('Error clearing alerts:', error);
+        alert('Error clearing alerts');
+      }
+    }
+  });
+
+  // Alert history filters
+  document.getElementById('search-alerts').addEventListener('input', () => {
+    fetchAlerts();
+  });
+  document.getElementById('severity-filter').addEventListener('change', () => {
+    fetchAlerts();
+  });
+
+  // Live Detection time
+  function updateLiveDetectionTime() {
+    const now = new Date();
+    document.getElementById('live-detection-time').textContent = now.toLocaleTimeString();
+    document.getElementById('live-detection-time-footer').textContent = now.toLocaleString();
+  }
+  setInterval(updateLiveDetectionTime, 1000);
+  updateLiveDetectionTime();
+
+  // Danger banner acknowledge
+  document.getElementById('acknowledge-btn').addEventListener('click', () => {
+    document.getElementById('danger-banner').style.display = 'none';
+  });
+
+  // Periodic updates
+  setInterval(fetchStats, 5000);  // Update stats every 5 seconds
+  setInterval(fetchAlerts, 10000); // Update alerts every 10 seconds
+  
+  // Initial load
+  fetchStats();
+  fetchAlerts();
+
+  // Show Dashboard by default
+  sections.forEach(sec => sec.style.display = 'none');
+  document.getElementById('dashboard').style.display = '';
+
+  // Simple video feed status check
+  function checkVideoStatus() {
+    const dashboardVideo = document.getElementById('dashboard-video-feed');
+    const liveVideo = document.getElementById('live-video-stream');
+    
+    if (dashboardVideo) {
+      dashboardVideo.onerror = function() {
+        console.log('Dashboard video feed error');
+      };
+      dashboardVideo.onload = function() {
+        console.log('Dashboard video feed loaded');
+      };
+    }
+    
+    if (liveVideo) {
+      liveVideo.onerror = function() {
+        console.log('Live video feed error');
+      };
+      liveVideo.onload = function() {
+        console.log('Live video feed loaded');
+      };
+    }
+  }
+
+  // Initialize video status check
+  checkVideoStatus();
+});
+    </script>
+  </body>
+</html>
