@@ -37,12 +37,12 @@ women_safety_model.pt must be in the project root
 
 This is a YOLOv8 model trained for women safety detection
 
-⚙️ Configuration
-🔹 Camera Setup
-By default, the app uses the primary camera (index 0):
 
-python
-Copy code
+
+## ⚙️ Configuration
+### 🔹 Camera Setup
+By default, the app uses the primary camera (index `0`):
+```python
 cap = cv2.VideoCapture(0)
 If multiple cameras exist, change index to 1, 2, etc.
 
@@ -51,7 +51,7 @@ To enable WhatsApp/SMS alerts via Twilio:
 
 Create a Twilio account
 
-Update Twilio credentials in app.py:
+Update your Twilio credentials in app.py:
 
 python
 Copy code
@@ -83,24 +83,18 @@ Recent alerts
 Threat notifications
 
 🎥 Live Detection
-Full-screen video with bounding boxes
+Full-screen video with detection boxes
 
-Controls:
-
-Start/Stop Recording
-
-Pause/Resume Detection
-
-Snapshot
+Controls: Start/Stop Recording, Pause/Resume Detection, Snapshot
 
 Real-time detection stats
 
 📚 Alert History
 Full log of all detections
 
-Search by text
+Search by keyword
 
-Filter by severity level
+Filter by severity
 
 Clear all alerts
 
@@ -127,7 +121,7 @@ GET	/api/snapshot	Take a snapshot
 POST	/api/clear_alerts	Delete all alerts
 
 🗄️ Database
-Uses SQLite (incidents.db) storing:
+Uses SQLite (incidents.db) to store:
 
 Timestamp
 
@@ -143,33 +137,33 @@ Database auto-creates if missing.
 
 🛠️ Troubleshooting
 Camera Issues
-Close other apps using the camera
+Close other camera apps
 
 Change camera index
 
-Check camera permissions
+Check permissions
 
 Model Issues
-Ensure women_safety_model.pt exists in project root
+Ensure women_safety_model.pt exists
 
-Check memory/disk availability
+Check memory/disk space
 
 Performance Issues
 Reduce JPEG quality
 
 Lower detection confidence
 
-Close heavy applications
+Close heavy apps
 
 SMS Issues
 Verify Twilio credentials
 
-Use a verified phone number
+Use verified number
 
-Ensure internet connection
+Check internet
 
 🔐 Security Considerations
-App runs on localhost by default
+Runs on localhost
 
 Add authentication for production
 
@@ -184,13 +178,13 @@ Copy code
 ├── app.py                 # Main Flask application
 ├── detector.py            # Standalone detection script
 ├── requirements.txt       # Dependencies
-├── women_safety_model.pt  # Trained YOLOv8 model
-├── static/               
+├── women_safety_model.pt  # YOLOv8 model
+├── static/
 │   ├── css/
 │   ├── js/
 │   └── snapshots/
-├── templates/            
-└── incidents.db          
+├── templates/
+└── incidents.db
 Customization Options
 Modify detection classes
 
@@ -201,8 +195,7 @@ Customize alert messages
 Add new API endpoints
 
 📄 License
-This project is intended for educational and safety purposes only.
-Always comply with local surveillance and privacy laws.
+This project is intended for educational and safety purposes only. Follow local laws regarding surveillance and privacy.
 
 🆘 Support
 Check troubleshooting
@@ -211,11 +204,11 @@ Verify dependencies
 
 Check camera functionality
 
-Read console logs
+View console logs
 
 🤝 Contributing
 Contributions are welcome!
-Please ensure:
+Ensure:
 
 Clean, maintainable code
 
@@ -224,6 +217,3 @@ Proper documentation
 Security considerations
 
 Testing before submission
-
-yaml
-Copy code
