@@ -58,12 +58,15 @@ Copy code
 account_sid = 'YOUR_ACCOUNT_SID'
 auth_token = 'YOUR_AUTH_TOKEN'
 your_verified_number = 'whatsapp:+YOUR_PHONE_NUMBER'
+
+
 ▶️ Usage
 Start the Application
 bash
 Copy code
 python app.py
 Open browser and visit:
+
 
 arduino
 Copy code
@@ -72,35 +75,34 @@ http://localhost:5000
 📊 Dashboard
 Live camera feed
 
+
+
 Total alerts
 
 Last detection time
-
 System uptime
-
 Recent alerts
-
 Threat notifications
+
 
 🎥 Live Detection
 Full-screen video with detection boxes
-
 Controls: Start/Stop Recording, Pause/Resume Detection, Snapshot
-
 Real-time detection stats
 
+
 📚 Alert History
+
 Full log of all detections
-
 Search by keyword
-
 Filter by severity
-
 Clear all alerts
 
 🧠 Detection Classes
+
 High Priority
 Man attacking woman
+
 
 Weapons
 
@@ -124,27 +126,22 @@ POST	/api/clear_alerts	Delete all alerts
 Uses SQLite (incidents.db) to store:
 
 Timestamp
-
 Detection label
-
 Severity level
-
 Confidence score
-
 Zone information
-
 Database auto-creates if missing.
 
+
 🛠️ Troubleshooting
+
 Camera Issues
 Close other camera apps
-
 Change camera index
-
 Check permissions
-
 Model Issues
 Ensure women_safety_model.pt exists
+
 
 Check memory/disk space
 
@@ -162,17 +159,18 @@ Use verified number
 
 Check internet
 
+
 🔐 Security Considerations
+
 Runs on localhost
-
 Add authentication for production
-
 Protect Twilio credentials
-
 Keep dependencies updated
+
 
 🧩 Development
 Folder Structure
+
 csharp
 Copy code
 ├── app.py                 # Main Flask application
@@ -185,22 +183,20 @@ Copy code
 │   └── snapshots/
 ├── templates/
 └── incidents.db
+
+
 Customization Options
 Modify detection classes
-
 Adjust confidence thresholds
-
 Customize alert messages
-
 Add new API endpoints
 
 
 🆘 Support
+
 Check troubleshooting
-
 Verify dependencies
-
 Check camera functionality
-
 View console logs
+
 
