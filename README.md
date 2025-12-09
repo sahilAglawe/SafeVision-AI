@@ -194,8 +194,6 @@ Customize alert messages
 
 Add new API endpoints
 
-📄 License
-This project is intended for educational and safety purposes only. Follow local laws regarding surveillance and privacy.
 
 🆘 Support
 Check troubleshooting
@@ -206,14 +204,3 @@ Check camera functionality
 
 View console logs
 
-🤝 Contributing
-Contributions are welcome!
-Ensure:
-
-Clean, maintainable code
-
-Proper documentation
-
-Security considerations
-
-Testing before submission
