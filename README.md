@@ -148,7 +148,7 @@ Check memory/disk space
 Performance Issues
 Reduce JPEG quality
 
-Lower detection confidence
+Lower detection confidence..
 
 Close heavy apps
 
@@ -198,5 +198,6 @@ Check troubleshooting
 Verify dependencies
 Check camera functionality
 View console logs
+
 
 
